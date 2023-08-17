@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from "axios";
 import Form from "./components/Form"
 import Numbers from './components/Numbers'
 import Search from './components/Search'
@@ -8,6 +9,14 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNumber] = useState('')
   const [searchPeople, setSearchPeople] = useState('');
+
+  const getContacts = () =>{
+    axios
+    .get('http://localhost:3001/persons')
+    .then(response=>setPersons(response.data));
+  }
+
+  useEffect(getContacts, [])
 
   const addNewName = event =>{
     setNewName(event.target.value);
