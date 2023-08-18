@@ -3,6 +3,7 @@ import axios from "axios";
 import Form from "./components/Form"
 import Numbers from './components/Numbers'
 import Search from './components/Search'
+import Backend from './services/Backend';
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -24,20 +25,34 @@ const App = () => {
 
   const addNewPerson = event =>{
     event.preventDefault();
-    const isPresent = persons.filter(element=>element.name===newName).length===0;
-    if(!isPresent){
-      alert(`${newName} already added to phonebook`);
+    const filteredPeople = persons.filter(element=>element.name===newName);
+    if(filteredPeople.length!==0){
+      const [existingContact] = filteredPeople;
+      const shouldUpdate = window.confirm(`Update ${existingContact.name} is already added to phonebook, replace the old number with a new one?`);
+      shouldUpdate?Backend.updateContact(existingContact, newNumber)
+      .then((data)=>setPersons(persons.map(person=>person.id===data.id?{...person, number:data["number"]}:person))):
+      null
       return;
     }
     const newPerson = {
       name: newName,
       number: newNumber,
     }
-    setPersons(prev=>prev.concat(newPerson));
+    Backend.addContact(newPerson)
+    .then(data=>{ 
+      setPersons(prevPersons=>([...prevPersons,data]))
+    })
   }
 
   const addNewNumber = event =>{
     setNumber(event.target.value);
+  }
+
+  const deletePeople = (people) =>{
+    const shouldDelete = window.confirm(`Delete ${people.name} ?`)
+    shouldDelete?Backend.deleteContact(people.id)
+    .then(()=>setPersons(prevPersons=>prevPersons.filter(person=>person.id!==people.id)))
+    :"";
   }
 
   const filteredPeople = () =>{
@@ -48,11 +63,12 @@ const App = () => {
     const isFinding = searchPeople.length!==0;
     const personsToShow = isFinding?filteredPeople():persons;
     return personsToShow.map(person=>{
-      return <p
+      return <div
        key={person.name}
       >
       {person.name} {person.number}
-      </p>
+      <button type='button' onClick={()=>deletePeople(person)}>delete</button>
+      </div>
     })
   }
 
