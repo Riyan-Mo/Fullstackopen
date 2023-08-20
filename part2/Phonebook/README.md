@@ -1,3 +1,3 @@
 # phonebook
 
-Solution for exercise 2.11: phonebook of fullstackopen.
+Solution for exercise phonebook of fullstackopen.
