@@ -41,6 +41,10 @@ app.get('/api/persons', (request, response)=>{
   response.json(phonebook);
 })
 
+app.get('/', (request, response)=>{
+  response.json(phonebook);
+})
+
 app.get('/info', (request, response)=>{
   const date = new Date();
   response.send(`
