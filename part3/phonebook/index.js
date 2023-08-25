@@ -3,6 +3,8 @@ const morgan = require('morgan');
 const app = express();
 
 app.use(express.json());
+app.use(express.static('dist'));
+
 app.use(morgan(function (tokens, req, res) {
   return [
     tokens.method(req, res),
@@ -38,10 +40,6 @@ let phonebook = [
 ]
 
 app.get('/api/persons', (request, response)=>{
-  response.json(phonebook);
-})
-
-app.get('/', (request, response)=>{
   response.json(phonebook);
 })
 
