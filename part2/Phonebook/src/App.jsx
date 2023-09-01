@@ -17,7 +17,7 @@ const App = () => {
 
   const getContacts = () =>{
     axios
-    .get('http://localhost:3001/persons')
+    .get('/api/persons')
     .then(response=>setPersons(response.data));
   }
 
@@ -60,6 +60,9 @@ const App = () => {
     .then(data=>{ 
       setPersons(prevPersons=>([...prevPersons,data]));
       notificationUpdate(`Added ${data.name} to phonebook`);
+    })
+    .catch(error=>{
+      notificationUpdate(error.response.data.error, 'error')
     })
   }
 

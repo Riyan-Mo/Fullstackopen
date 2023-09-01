@@ -55,11 +55,11 @@ app.post('/api/persons/', (request, response)=>{
       error: 'name or number missing'
     })
   }
-  else if(alreadyExists){
-    return response.status(404).json({
-      error: 'name already exists in records',
-    })
-  }
+  // else if(alreadyExists){
+  //   return response.status(404).json({
+  //     error: 'name already exists in records',
+  //   })
+  // }
   const newPerson = new Phonebook({
     name:body.name,
     number:body.number
@@ -67,8 +67,19 @@ app.post('/api/persons/', (request, response)=>{
   newPerson.save().then(result=>{
     console.log(newPerson)
     mongoose.connection.close();
+    response.json(newPerson);
   })
-  response.json(newPerson);
+  .catch(error=>{
+    const errorPath = error.errors;
+    let errorMessage="";
+    if(errorPath.number){
+      errorMessage = errorPath.number.properties.message;
+    }
+    else if(errorPath.name){
+      errorMessage = errorPath.name.properties.message;
+    }
+    return response.status(400).json({error: `${errorMessage}`})
+  })
 })
 
 app.put('/api/persons/:id', (request, response, next)=>{
