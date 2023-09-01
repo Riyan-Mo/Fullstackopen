@@ -1,16 +1,16 @@
-require('dotenv').config()
-const mongoose = require('mongoose')
+require("dotenv").config()
+const mongoose = require("mongoose")
 
 const url = process.env.MONGODB_URI
 
-mongoose.set('strictQuery',false)
+mongoose.set("strictQuery",false)
 mongoose.connect(url)
-.then(result=>{
-  console.log('connected to MongoDB')
-})
-.catch(error=>{
-  console.log("Couldn't connect to database", error);
-})
+  .then(result=>{
+    console.log("connected to MongoDB")
+  })
+  .catch(error=>{
+    console.log("Couldn't connect to database", error)
+  })
 
 const phonebookSchema = new mongoose.Schema({
   name: {
@@ -23,7 +23,7 @@ const phonebookSchema = new mongoose.Schema({
     minLength: 8,
     validate: {
       validator: function(v){
-      return /\d{2,3}-\d{5,6}/.test(v);
+        return /\d{2,3}-\d{5,6}/.test(v)
       },
       message: props=>`${props.value} is not a valid phone number!`
     },
@@ -31,7 +31,7 @@ const phonebookSchema = new mongoose.Schema({
   }
 })
 
-phonebookSchema.set('toJSON',{
+phonebookSchema.set("toJSON",{
   transform:(document, returnedObject)=>{
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
@@ -39,4 +39,4 @@ phonebookSchema.set('toJSON',{
   }
 })
 
-module.exports = mongoose.model('Phonebook', phonebookSchema)
+module.exports = mongoose.model("Phonebook", phonebookSchema)
