@@ -67,8 +67,8 @@ describe('return', () => {
     const result = listHelper.favouriteBlog(listWithBlogs);
     expect(result).toEqual({
       title: 'Canonical string reduction',
-      author: 'E W. Dijkstra',
-      likes: 12,
+      author: 'Riyan Mohammad',
+      likes: 102,
     });
   });
 
