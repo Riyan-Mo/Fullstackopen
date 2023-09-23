@@ -20,13 +20,18 @@ const initialBlogs = [
   },
 ];
 
+let tempId;
+
 beforeEach(async () => {
   await Blog.deleteMany({});
   let blogObject = new Blog(initialBlogs[0]);
   await blogObject.save();
   blogObject = new Blog(initialBlogs[1]);
   await blogObject.save();
-}, 100000);
+  const response = await api.get('/api/blogs');
+  const blogs = response.body;
+  tempId = blogs[0].id;
+}, 1000000);
 
 test('returns correct amount of blogs', async () => {
   const response = await api.get('/api/blogs')
@@ -46,6 +51,7 @@ test('creates a new blog post', async () => {
   const newBlog = {
     title: 'Canonical string reduction',
     author: 'E W. Dijkstra',
+    url: 'htt.com',
     likes: 12,
   };
   await api.post('/api/blogs')
@@ -60,6 +66,7 @@ test('creates a new blog post with 0 likes if likes property is missing', async 
   const newBlog = {
     title: 'Canonical string reduction',
     author: 'E W. Dijkstra',
+    url: 'lmao.com',
   };
   const response = await api.post('/api/blogs').send(newBlog);
   expect(response.body.likes).toEqual(0);
@@ -76,6 +83,22 @@ test('verifies if title or url properties are missing from the request data', as
     .expect(400);
   await api.post('/api/blogs').send(newBlog2)
     .expect(400);
+}, 100000);
+
+test('updates information of an individual blog post', async () => {
+  const changedBlog = {
+    likes: 8,
+  };
+  const response = await api.put(`/api/blogs/${tempId}`)
+    .send(changedBlog)
+    .expect(201);
+  const updatedBlog = response.body;
+  expect(updatedBlog.likes).toEqual(changedBlog.likes);
+});
+
+test('deletes a blog when id is provided', async () => {
+  await api.delete(`/api/blogs/${tempId}`)
+    .expect(204);
 }, 100000);
 
 afterAll(async () => {
