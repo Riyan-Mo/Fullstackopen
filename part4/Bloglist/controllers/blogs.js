@@ -1,15 +1,24 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable consistent-return */
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({});
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
   response.json(blogs);
 });
 
 blogsRouter.delete('/:id', async (request, response) => {
+  const { user } = request;
+  const userId = user.id;
   const blogId = request.params.id;
-  await Blog.findByIdAndDelete(blogId);
-  response.status(204).end();
+  const blog = await Blog.findById(blogId);
+  if (blog.user.toString() === userId.toString()) {
+    await Blog.findOneAndDelete(blog);
+    return response.status(204).end();
+  }
+  return response.status(401).json({ error: 'Unauthorised user' });
 });
 
 blogsRouter.put('/:id', async (request, response) => {
@@ -28,13 +37,23 @@ blogsRouter.put('/:id', async (request, response) => {
 });
 
 blogsRouter.post('/', async (request, response) => {
-  if (!request.body.title || !request.body.url) {
-    response.status(400).end();
-  } else {
-    const blog = new Blog(request.body);
-    const result = await blog.save();
-    response.status(201).json(result);
+  const { body } = request;
+  if (!body.title || !body.url) {
+    return response.status(400).end();
   }
+  if (!request.user) { return response.status(401).json({ error: 'Unauthorized' }); }
+  const { user } = request;
+  const blog = new Blog({
+    title: body.title,
+    author: body.author || user.name,
+    url: body.url,
+    likes: body.likes,
+    user: body.userId || user._id,
+  });
+  const result = await blog.save();
+  user.blogs = user.blogs.concat(blog.id);
+  await user.save();
+  response.status(201).json(result);
 });
 
 module.exports = blogsRouter;
