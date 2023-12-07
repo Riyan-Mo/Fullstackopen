@@ -1,10 +1,8 @@
 import ReactDOM from 'react-dom/client'
-import { createStore } from 'redux'
+import { anecdoteFilter } from './reducers/anecdoteFilterReducer';
 import { Provider } from 'react-redux'
+import store from './reducers/store';
 import App from './App'
-import reducer from './reducers/anecdoteReducer'
-
-const store = createStore(reducer)
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -18,3 +16,4 @@ const renderApp = () => {
 
 renderApp()
 store.subscribe(renderApp)
+store.dispatch(anecdoteFilter(" "));
