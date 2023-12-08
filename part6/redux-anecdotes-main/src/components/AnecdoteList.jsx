@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useSelector, useDispatch } from 'react-redux'
-import { incrementVote}  from '../reducers/anecdoteReducer';
-import { setNotification, removeNotification } from '../reducers/notificationReducer';
+import { incrementVote, initializeAnecdotes}  from '../reducers/anecdoteReducer';
+import { setNotification } from '../reducers/notificationReducer';
+import { useEffect } from 'react';
 
 const AnecdoteList = () => {
   let anecdotes = useSelector(state => state.anecdotes)
@@ -13,11 +15,12 @@ const AnecdoteList = () => {
   const vote = (id) => {
     dispatch(incrementVote(id));
     const votedAnecdote = filteredAnecdotes.find(anecdote=>anecdote.id === id);
-    dispatch(setNotification(`You voted '${votedAnecdote.content}'`))
-    setTimeout(()=>{
-      dispatch(removeNotification(""));
-    }, 5000)
+    dispatch(setNotification(`You voted '${votedAnecdote.content}'`, 5))
   }
+
+  useEffect(()=>{
+    dispatch(initializeAnecdotes())
+  }, [])
 
     return(
       <div>
