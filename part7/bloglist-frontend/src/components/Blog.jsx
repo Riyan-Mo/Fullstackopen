@@ -37,7 +37,7 @@ const Blog = ({ blog, handleLikes, user, deleteBlog }) => {
           </div>
           <div>{blog.user ? blog.user.name : ''}</div>
           {blog.user
-            ? blog.user.id === user.id && (
+            ? blog.user.username === user.username && (
               <button
                 type="button"
                 className="deleteBtn"

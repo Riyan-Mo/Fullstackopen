@@ -1,15 +1,15 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
+import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const BlogForm = ({ blog, setBlog, postBlog }) => {
-  const [visibility, setVisibility] = useState(true);
+  const [visibility, setVisibility] = useState(true)
   const handleBlogDetails = (e) => {
-    const { name, value } = e.target;
-    setBlog((prevBlog) => ({ ...prevBlog, [name]: value }));
-  };
+    const { name, value } = e.target
+    setBlog((prevBlog) => ({ ...prevBlog, [name]: value }))
+  }
 
-  const showWhenVisible = { display: visibility ? "none" : "" };
-  const hideWhenVisible = { display: visibility ? "" : "none" };
+  const showWhenVisible = { display: visibility ? 'none' : '' }
+  const hideWhenVisible = { display: visibility ? '' : 'none' }
 
   return (
     <div>
@@ -61,13 +61,13 @@ const BlogForm = ({ blog, setBlog, postBlog }) => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
 BlogForm.propTypes = {
   postBlog: PropTypes.func.isRequired,
   setBlog: PropTypes.func.isRequired,
   blog: PropTypes.object.isRequired,
-};
+}
 
-export default BlogForm;
+export default BlogForm

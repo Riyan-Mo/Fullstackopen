@@ -2,13 +2,18 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import BlogForm from './components/BlogForm'
+import { setNotification, resetNotification } from './reducers/notificationReducer'
+import { useSelector, useDispatch } from 'react-redux'
+import { addBlog, setBlogs, initializeBlogs, likeBlog, deleteBlog } from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const dispatch = useDispatch()
+  const notification = useSelector(state => state.notification)
+  const blogs = useSelector(state => state.blogs)
+
   const [username, setUserName] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState({})
-  const [notification, setNotification] = useState('')
   const [blog, setBlog] = useState({
     title: '',
     author: '',
@@ -16,11 +21,8 @@ const App = () => {
   })
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then((receivedBlogs) =>
-        setBlogs(receivedBlogs.sort((a, b) => b.likes - a.likes)),
-      )
+    dispatch(initializeBlogs())
+    dispatch(setBlogs(blogs.sort((a, b) => b.likes - a.likes)))
   }, [])
 
   useEffect(() => {
@@ -45,9 +47,9 @@ const App = () => {
       blogService.setToken(response.token)
     } catch (error) {
       console.log('Invalid', error)
-      setNotification('Wrong username or password')
+      dispatch(setNotification('Wrong username or password'))
       setTimeout(() => {
-        setNotification('')
+        dispatch(resetNotification())
       }, 5000)
     }
   }
@@ -55,55 +57,46 @@ const App = () => {
   const postBlog = async (e) => {
     e.preventDefault()
     try {
-      const response = await blogService.postBlog(blog, user.token)
-      setBlogs((prevBlogs) => prevBlogs.concat(response))
-      setNotification(`New blog ${blog.title} added`)
+      dispatch(addBlog(blog))
+      dispatch(setNotification(`New blog ${blog.title} added`))
       setBlog({ title: '', author: '', url: '' })
       setTimeout(() => {
-        setNotification('')
+        dispatch(resetNotification())
       }, 5000)
     } catch (error) {
-      setNotification('New blog couldn\'t be added')
+      dispatch(setNotification('New blog couldn\'t be added'))
       setTimeout(() => {
-        setNotification('')
+        dispatch(resetNotification())
       }, 5000)
     }
   }
 
-  const handleLikes = async (blog) => {
-    const likedBlog = await blogService.updateLikes({ ...blog })
-    setBlogs((prevBlogs) =>
-      prevBlogs.map((prevBlog) =>
-        prevBlog.id === likedBlog.id ? likedBlog : prevBlog,
-      ),
-    )
+  const handleLikes = (blog) => {
+    dispatch(likeBlog(blog))
   }
 
-  const deleteBlog = async (blog) => {
+  const removeBlog = (blog) => {
     const confirmation = window.confirm(
       `Remove blog ${blog.title} by ${blog.author}?`,
     )
     if (!confirmation) return
     try {
-      await blogService.removeBlog(blog.id)
-      setBlogs((prevBlogs) =>
-        prevBlogs.filter((prevBlog) => prevBlog.id !== blog.id),
-      )
+      dispatch(deleteBlog(blog))
     } catch (error) {
       console.log(error)
     }
   }
 
   const logoutUser = () => {
-    setUser(null)
+    setUser()
     window.localStorage.removeItem('user')
-    setNotification('Logged out successfully')
+    dispatch(setNotification('Logged out successfully'))
     setTimeout(() => {
-      setNotification('')
+      dispatch(resetNotification())
     }, 5000)
   }
 
-  if (user.username) {
+  if (user && user.username) {
     return (
       <div>
         <h2>blogs</h2>
@@ -116,7 +109,7 @@ const App = () => {
           <Blog
             key={blog.id}
             blog={blog}
-            deleteBlog={deleteBlog}
+            deleteBlog={removeBlog}
             handleLikes={handleLikes}
             user={user}
           />
