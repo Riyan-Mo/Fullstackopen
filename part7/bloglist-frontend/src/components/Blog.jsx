@@ -1,55 +1,30 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import { TableRow, TableCell, Button } from '@mui/material'
 
-const Blog = ({ blog, handleLikes, user, deleteBlog }) => {
-  const [showBlogDetails, setShowBlogDetails] = useState(false)
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
+const Blog = ({ blog, user, deleteBlog }) => {
 
   return (
-    <div style={blogStyle} className="blog">
-      <div className="blogTitleAuthor">
-        {blog.title} {blog.author}{' '}
-        <button
-          className="blogDetailsButton"
-          onClick={() => setShowBlogDetails((pre) => !pre)}
-        >
-          {showBlogDetails ? 'hide' : 'view'}
-        </button>
-      </div>
-      {showBlogDetails && (
-        <div className="blogDetails">
-          <div>{blog.url}</div>
-          <div className="blogLike">
-            likes {blog.likes}{' '}
-            <button
-              type="button"
-              className="likeBtn"
-              onClick={() => handleLikes(blog)}
-            >
-              like
-            </button>
-          </div>
-          <div>{blog.user ? blog.user.name : ''}</div>
-          {blog.user
-            ? blog.user.username === user.username && (
-              <button
+    <TableRow className="blog">
+      <TableCell className="blogTitleAuthor">
+        <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
+        {blog.user
+          ? blog.user.username === user.username && (
+            <div>
+              <Button
+                variant="contained"
+                color="primary"
                 type="button"
                 className="deleteBtn"
                 onClick={() => deleteBlog(blog)}
               >
                   remove
-              </button>
-            )
-            : null}
-        </div>
-      )}
-    </div>
+              </Button>
+            </div>
+          ): null}
+      </TableCell>
+    </TableRow>
   )
 }
 

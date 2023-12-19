@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { TextField, Button } from '@mui/material'
 
 const BlogForm = ({ blog, setBlog, postBlog }) => {
   const [visibility, setVisibility] = useState(true)
@@ -14,50 +15,58 @@ const BlogForm = ({ blog, setBlog, postBlog }) => {
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button id="newBlogBtn" onClick={() => setVisibility(!visibility)}>
-          New Blog
-        </button>
+        <Button id="newBlogBtn" onClick={() => setVisibility(!visibility)} type='button'>
+          Create New
+        </Button>
       </div>
       <div style={showWhenVisible}>
         <h2>Create new</h2>
         <form onSubmit={postBlog}>
-          <label htmlFor="title">Title:</label>
-          <input
-            type="text"
-            id="title"
-            onChange={handleBlogDetails}
-            value={blog.title}
-            name="title"
-          />
+          <div>
+            <TextField
+              label='title'
+              type="text"
+              id="title"
+              onChange={handleBlogDetails}
+              value={blog.title}
+              name="title"
+            />
+          </div>
           <br />
-          <label htmlFor="author">Author:</label>
-          <input
-            type="text"
-            id="author"
-            onChange={handleBlogDetails}
-            value={blog.author}
-            name="author"
-          />
+          <div>
+            <TextField
+              label='author'
+              type="text"
+              id="author"
+              onChange={handleBlogDetails}
+              value={blog.author}
+              name="author"
+            />
+          </div>
           <br />
-          <label htmlFor="url">url:</label>
-          <input
-            type="text"
-            id="url"
-            onChange={handleBlogDetails}
-            value={blog.url}
-            name="url"
-          />
+          <div>
+            <TextField
+              label='url'
+              type="text"
+              id="url"
+              onChange={handleBlogDetails}
+              value={blog.url}
+              name="url"
+            />
+          </div>
           <br />
-          <button id="submitBtn" type="submit">
+          <div>
+            <Button id="submitBtn" type="submit">
             Create
-          </button>
-          <button
-            id="closeFormBtn"
-            onClick={() => setVisibility(!visibility)}
-            type="button"
-          >
+            </Button>
+            <Button
+              id="closeFormBtn"
+              onClick={() => setVisibility(!visibility)}
+              type="button"
+            >
             close
-          </button>
+            </Button>
+          </div>
         </form>
       </div>
     </div>

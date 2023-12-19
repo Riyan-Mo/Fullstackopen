@@ -39,6 +39,12 @@ const postBlog = async (blog) => {
   return response.data
 }
 
+const postComment = async(blog, comment) => {
+  const updatedBlog = { ...blog, ['comments']: [...blog.comments, comment] }
+  const response = await axios.post(`${blogUrl}/${blog.id}/comments`, updatedBlog)
+  return response.data
+}
+
 export default {
   getAll,
   loginUser,
@@ -46,4 +52,5 @@ export default {
   updateLikes,
   setToken,
   removeBlog,
+  postComment,
 }

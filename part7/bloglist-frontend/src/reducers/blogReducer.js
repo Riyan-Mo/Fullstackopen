@@ -8,7 +8,6 @@ const blogSlice = createSlice({
   initialState,
   reducers: {
     appendBlogs(state, action){
-      console.log(JSON.parse(JSON.stringify(state)))
       state.push(action.payload)
     },
     setBlogs(state, action){
@@ -47,8 +46,9 @@ export const deleteBlog = blog => {
 
 export const initializeBlogs = () => {
   return async dispatch => {
-    const blogs = await blogService.getAll()
-    dispatch(setBlogs(blogs))
+    const response = await blogService.getAll()
+    const blogs = [ ...response ]
+    dispatch(setBlogs(blogs.sort((a, b) => b.likes - a.likes)))
   }
 }
 
