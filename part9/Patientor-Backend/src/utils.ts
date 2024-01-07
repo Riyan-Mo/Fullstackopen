@@ -1,4 +1,4 @@
-import { NewPatientEntry, Gender, Entry } from "../types/patient";
+import { NewPatientEntry, Gender, Entry, HospitalEntry, OccupationalHealthcareEntry, HealthCheckEntry } from "../types/patient";
 
 const isString = (text:unknown): text is string =>{
     return text instanceof String || typeof text === 'string';
@@ -54,6 +54,7 @@ const parseOccupation = (occupation: unknown):string =>{
 //     return entry;
 // };
 
+
 const toNewPatientEntry = (object:unknown):NewPatientEntry =>{
     if(!object || typeof object !== 'object'){
         throw new Error('Incorrect or missing data');
@@ -70,6 +71,70 @@ const toNewPatientEntry = (object:unknown):NewPatientEntry =>{
         return newEntry;    
     }
     throw new Error("Incorrect data: some fields are missing");
+};
+
+// const parseDiagnosisCodes = (object: unknown): Array<Diagnosis['code']> =>  {
+//     if (!object || typeof object !== 'object' || !('diagnosisCodes' in object)) {
+//       return [] as Array<Diagnosis['code']>;
+//     }  
+//     return object.diagnosisCodes as Array<Diagnosis['code']>;
+// };
+
+const isHealthCheckEntry = (object: Entry):object is HealthCheckEntry => {
+    return 'healthCheckRating' in object; 
+};
+
+const parseHealthCheckEntry = (object:Entry) => {
+    if(!isHealthCheckEntry(object)){
+        throw new Error("Incomplete entry");
+    }
+    object.healthCheckRating = Number(object.healthCheckRating);
+    return object; 
+};
+
+const isHospitalEntry = (object: Entry) => {
+    return 'discharge' in object; 
+};
+
+const parseHospitalEntry = (object:Entry) => {
+    if(!isHospitalEntry(object)){
+        throw new Error("Incomplete entry");
+    }
+    return object as HospitalEntry; 
+};
+
+const isOccupationalEntry = (object: Entry) => {
+    return 'employerName' in object; 
+};
+
+const parseOccupationalEntry = (object:Entry) => {
+    if(!isOccupationalEntry(object)){
+        throw new Error("Incomplete entry");
+    }
+    return object as OccupationalHealthcareEntry; 
+};
+
+const parseType = (object:Entry) => {
+    switch(object.type){
+        case "HealthCheck":
+           return parseHealthCheckEntry(object);
+        case "Hospital":
+            return parseHospitalEntry(object);
+        default: 
+            return parseOccupationalEntry(object);
+    }
+};
+
+export const toNewEntry = (object:unknown):Entry =>{
+    if(!object || typeof object !== 'object' ){
+        throw new Error("Entry is either not existing or not an object.");
+    }
+
+    if(!('date' in object) || !('type' in object) || !('specialist' in object) || !('description' in object)){
+        throw new Error("Incomplete Entry");
+    }
+    const newObj:Entry = parseType(object as Entry);
+    return newObj;
 };
 
 export default toNewPatientEntry;
