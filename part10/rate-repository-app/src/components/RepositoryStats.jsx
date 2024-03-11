@@ -33,7 +33,8 @@ export default function RepositoryStats({ item }) {
                 <StatTab
                 key={key+value} 
                 name={key}
-                value={value} />
+                value={value}
+                />
             )
     }
 

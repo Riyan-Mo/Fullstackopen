@@ -12,6 +12,7 @@ export default function AppBarTab({ name, path }) {
             color: theme.text.white,
             fontSize: theme.fontSizes.heading,
             backgroundColor: backgroundColor,
+            borderRadius: 4,
         }
     })
 

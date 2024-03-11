@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text } from "react-native"
+import { View, StyleSheet, Text, Platform } from "react-native"
 import theme from "./theme"
 
 export default function StatTab({name, value}) {

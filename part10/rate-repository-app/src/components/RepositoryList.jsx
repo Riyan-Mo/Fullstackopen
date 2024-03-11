@@ -4,8 +4,8 @@ import RepositoryItem from './RepositoryItem';
 const styles = StyleSheet.create({
   separator: {
     height: 15,
-    backgroundColor: "#e1e5e8"
-  },
+    backgroundColor: "#e1e5e8",
+  }
 });
 
 const repositories = [
@@ -64,6 +64,7 @@ const RepositoryList = () => {
         ItemSeparatorComponent={ItemSeparator}
         renderItem={({ item }) => <RepositoryItem item={item} />}
         keyExtractor={item => item.id}
+        showsVerticalScrollIndicator
       />
   );
 };
