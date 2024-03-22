@@ -189,7 +189,8 @@ const resolvers = {
   Mutation:{
     addBook: (root, args) => {
       const newBook = {...args, id: uuid()};
-      if(!authors.includes(args.author)){
+      const authorNames = authors.map(author=>author.name);
+      if(authorNames.includes(args.author)===false){
         authors.push({name: args.author, id: uuid()});
       }
       books.push(newBook);
