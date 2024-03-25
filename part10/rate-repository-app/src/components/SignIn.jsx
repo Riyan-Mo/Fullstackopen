@@ -2,9 +2,15 @@ import React from "react"
 import { TextInput, View, StyleSheet, Pressable, Text } from "react-native"
 import { useFormik } from 'formik'
 import theme from "./theme";
+import useSignIn from "../hooks/useSignIn";
 import * as yup from "yup";
+import { useNavigate } from 'react-router-native'
 
 export default function SignIn() {
+    const navigate = useNavigate();
+
+    const [signIn] = useSignIn();
+
     const validationSchema = yup.object().shape({
         username: yup
             .string()
@@ -21,8 +27,16 @@ export default function SignIn() {
         password: '',
     }
 
-    const onSubmit = () => {
-        console.log(formik.values)
+    const onSubmit = async(values) => {
+        const {username, password} = values;
+
+        try{
+            const {data} = await signIn({username, password});
+            navigate('/');
+        }
+        catch(e){
+            console.log(e);
+        }
     }
 
     const formik = useFormik({
