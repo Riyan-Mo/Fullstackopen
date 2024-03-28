@@ -4,7 +4,7 @@ import RepositoryHeading from './RepositoryHeading';
 
 export default function RepositoryItem({item}) {
     return (
-        <View>
+        <View testID='repositoryItem'>
             <RepositoryHeading item={item}/>
            <RepositoryStats item={item}/>
         </View>

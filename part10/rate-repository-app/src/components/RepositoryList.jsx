@@ -14,14 +14,8 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const RepositoryList = () => {
-  const { repositories, loading } = useRepositories();
-
+export const RepositoryListContainer = ({ repositories}) => {
   const repositoryNodes = repositories ? repositories.edges.map(edge => edge.node) : [];
-
-  if(loading){
-    return <Text style={styles.center}>Loading...</Text>
-  }
 
   return (
     <FlatList
@@ -32,6 +26,12 @@ const RepositoryList = () => {
       showsVerticalScrollIndicator
     />
   );
+}
+
+const RepositoryList = () => {
+  const { repositories } = useRepositories();
+
+  return <RepositoryListContainer repositories={repositories} />
 };
 
 export default RepositoryList;

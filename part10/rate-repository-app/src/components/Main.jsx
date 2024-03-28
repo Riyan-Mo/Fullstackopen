@@ -17,14 +17,31 @@ const styles = StyleSheet.create({
 });
 
 const Main = () => {
+
+    const routeArr = [
+        {
+            path: '/',
+            element: <RepositoryList />,
+        },
+        {
+            path: 'SignIn',
+            element: <SignIn />,
+        },
+        {
+            path: 'SignOut',
+            element: <SignOut />,
+        },
+        {
+            path: '*',
+            element: <Navigate to="/" replace />,
+        },
+    ]
+
     return (
         <View style={styles.container}>
             <AppBar />
             <Routes>
-                <Route path='/' element={<RepositoryList />} />
-                <Route path='SignIn' element={<SignIn />} />
-                <Route path='SignOut' element={<SignOut />} />
-                <Route path='*' element={<Navigate to="/" replace />} />
+                {routeArr.map(route => <Route key={route.path} path={route.path} element={route.element} />)}
             </Routes>
         </View>
     )
